@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stm32="https://developer.st.com/schemas/stm32cube/1.0.0" schemaVersion="1.7.55" xsi:noNamespaceSchemaLocation="PACK.xsd" xsi:schemaLocation="https://developer.st.com/schemas/stm32cube/1.0.0 stm32cube.xsd" Dvendor="STMicroelectronics:13" Dname="STM32*">
+  <vendor>STMicroelectronics</vendor>
+  <name>advanced_trace</name>
+  <environments>
+    <environment name="STM32Cube">
+      <stm32:pack type="UTILITY" friendlyName="advanced_trace" shortDesc="Advanced_Trace utility">
+        <relocation-info parent="utilities" layer="" element=""/>
+      </stm32:pack>
+    </environment>
+  </environments>
+  <ECCN>
+    <ECCN-EU>NEC</ECCN-EU>
+    <ECCN-US>EAR99</ECCN-US>
+  </ECCN>
+  <description>Pack of Advanced_Trace utility</description>
+  <url>https://developer.st.com/st-pack-server/api/v1/pack/</url>
+  <supportContact>https://community.st.com/</supportContact>
+  <repository type="git">https://github.com/STMicroelectronics/stm32-util-advanced-trace</repository>
+  <license>LICENSE.md</license>
+  <changelogs>
+    <changelog id="Release Notes" name="Release_Notes.html"/>
+  </changelogs>
+  <releases>
+    <release version="2.0.0" date="2026-03-13">
+      Refer to Release_Notes.html for release details.
+    </release>
+  </releases>
+  <keywords>
+    <keyword>STMicroelectronics</keyword>
+    <keyword>ST</keyword>
+    <keyword>STM32</keyword>
+    <keyword>utility</keyword>
+    <keyword>trace</keyword>
+    <keyword>uart</keyword>
+    <keyword>dma</keyword>
+  </keywords>
+  <conditions>
+    <condition id="STM32 HAL UART">
+      <description>STMicroelectronics UART HAL Driver as low level component</description>
+      <require Cclass="Device" Cgroup="STM32 HAL" Csub="UART"/>
+    </condition>
+    <condition id="interface_data">
+      <description>selection of interface data is required to use the component</description>
+      <accept Cclass="Utility" Cgroup="ADVANCED_TRACE" Csub="itf_data" Cvariant="UART"/>
+      <accept Cclass="Utility" Cgroup="ADVANCED_TRACE" Csub="itf_data" Cvariant="Template"/>
+    </condition>
+    <condition id="ADVANCED_TRACE Config">
+      <description>STMicroelectronics Utility advanced_trace Config</description>
+      <require Cclass="Utility" Cgroup="ADVANCED_TRACE" Csub="Core"/>
+    </condition>
+  </conditions>
+  <!-- This generator is launched if any component referencing this generator by 'id' is selected and the specified <gpdsc> file does not exist -->
+  <generators>
+    <!-- This generator is launched if any component referencing this generator by 'id' is selected and the specified <gpdsc> file does not exist -->
+    <generator id="advanced_trace_mx2codegen">
+      <description>ST Microelectronics: STM32 Cube Code Generator for utility Advanced_Trace Pack</description>
+      <exe>
+        <command host="win">.config/gen_code.bat</command>
+        <command host="linux">.config/gen_code.sh</command>
+        <command host="mac">.config/gen_code.sh</command>
+        <!-- passing the generator name-->
+        <argument>advanced_trace_mx2codegen</argument>
+        <argument>$G</argument>
+        <!-- #name of the gpdsc template contained in this PACK and aligned with GPDSC name-->
+        <argument>STMicroelectronics.advanced_trace.gpdsc.hbs</argument>
+        <!-- Flag to indicate that this Generator is dry-run capable -->
+        <argument mode="dry-run">--dry-run</argument>
+      </exe>
+      <!-- <workingDir>$P</workingDir> -->
+      <!-- path is specified either absolute or relative to PDSC or GPDSC file. If not specified it is the project directory configured by the environment  -->
+      <gpdsc name="$P/STMicroelectronics.advanced_trace.gpdsc"/>
+    </generator>
+  </generators>
+  <components>
+    <component Cclass="Utility" Cgroup="ADVANCED_TRACE" Csub="Core" Cversion="1.0.0" condition="interface_data">
+      <description>Advanced_Trace driver </description>
+      <files>
+        <file category="source" name="core/adv_trace_core.c"/>
+        <file category="header" name="core/adv_trace_core.h"/>
+        <file category="doc" name="README.md"/>
+        <file category="doc" name="SW_Security_Level.md"/>
+        <file category="header" name="templates/adv_trace_user_conf_template.h"/>
+        <file category="header" name="interface_data/adv_trace_itf_data.h"/>
+      </files>
+    </component>
+    <component Cclass="Utility" Cgroup="ADVANCED_TRACE" Csub="itf_data" Cvariant="UART" Cversion="1.0.0" condition="STM32 HAL UART" isDefaultVariant="true">
+      <description>UART-based ready to use interface (no initialization and configuration)</description>
+      <files>
+        <file category="source" name="interface_data/adv_trace_itfdata_uart.c"/>
+      </files>
+    </component>
+    <component Cclass="Utility" Cgroup="ADVANCED_TRACE" Csub="itf_data" Cvariant="Template" Cversion="1.0.0">
+      <description>template interface: up to you to implement the services based on the template</description>
+      <files>
+        <file category="source" name="interface_data/adv_trace_itfdata_template.c" attr="config" version="1.0.0"/>
+      </files>
+    </component>
+    <component generator="advanced_trace_mx2codegen" Cclass="Utility" Cgroup="STM32CubeMX2 Config" Csub="ADVANCED_TRACE" Cversion="1.0.0" condition="ADVANCED_TRACE Config">
+      <description> Code Generation for utility advanced_trace</description>
+      <environments>
+        <environment name="STM32Cube">
+        </environment>
+      </environments>
+      <files>
+        <file category="genAsset" name=".config/gen_code.bat"/>
+        <file category="genAsset" name=".config/gen_code.sh"/>
+        <file category="genAsset" name=".config/advanced_trace_config_parameters.json"/>
+        <file category="genAsset" name=".config/template/adv_trace_user_conf_template.h.hbs"/>
+        <file category="genAsset" name=".config/template/mx_advanced_trace_app_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_advanced_trace_app_template.h.hbs"/>
+        <file category="genAsset" name=".config/STMicroelectronics.advanced_trace.gpdsc.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_advanced_trace_license_template.md.hbs"/>
+      </files>
+    </component>
+  </components>
+</package>
