@@ -1,0 +1,332 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "version": "0.0.1",
+  "componentid": "::Utility:STM32CubeMX2 Config:ADVANCED_TRACE",
+  "type": "object",
+  "grammarVersion": "3.8.0",
+  "license": "Copyright (c) 2026 STMicroelectronics",
+  "properties": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "info": {
+          "title": "General information",
+          "description": "Overview and requirements for the Advanced Trace utility.",
+          "type": "object",
+          "properties": {
+            "description": {
+              "title": "Description",
+              "type": "string",
+              "description": "Brief overview of the Advanced Trace utility and its purpose.",
+              "actions": [
+                {
+                  "type": "disable",
+                  "condition": "true",
+                  "message": "This entry is displayed for information only and cannot be edited."
+                }
+              ],
+              "default": "Advanced Trace is a trace management system for STM32 microcontrollers. Use it for debugging or for communication with external systems, such as a console or monitoring tool, over UART or a custom I/O interface. The module stores trace data in a FIFO buffer and transfers it in the background using DMA."
+            },
+            "recommendation": {
+              "title": "Mandatory requirements",
+              "type": "string",
+              "actions": [
+                {
+                  "type": "disable",
+                  "condition": "true",
+                  "message": "This entry is displayed for information only and cannot be edited."
+                }
+              ],
+              "default": "Configure the selected interface properly and enable DMA TX on the associated peripheral. Also ensure that the trace FIFO size is valid and that the FIFO memory location is in a valid writable memory region.",
+              "description": "These requirements must be met before initializing the Advanced Trace utility to ensure correct operation."
+            }
+          }
+        },
+        "basic": {
+          "title": "Main features",
+          "type": "object",
+          "properties": {
+            "fifo_size": {
+              "title": "FIFO size",
+              "type": "integer",
+              "default": 1024,
+              "minimum": 64,
+              "maximum": 4096,
+              "description": "Set the size, in bytes, of the trace FIFO buffer."
+            },
+            "override_mem_section": {
+              "title": "Custom FIFO memory section",
+              "type": "boolean",
+              "default": false,
+              "description": "Use a custom section for the trace FIFO instead of the default location."
+            },
+            "memory_section": {
+              "title": "FIFO memory section",
+              "actions": [
+                {
+                  "type": "include",
+                  "condition": "$basic.override_mem_section==true",
+                  "message": "The FIFO memory section field is displayed when custom FIFO memory section is enabled."
+                },
+                {
+                  "type": "error",
+                  "condition": "!/^([a-zA-Z_.][a-zA-Z0-9_.]{3,31})?$/.test($value)",
+                  "message": "The memory section name must start with a letter, underscore, or dot and contain only letters, digits, underscores, or dots."
+                }
+              ],
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 32,
+              "default": "advanced_trace_fifo",
+              "description": "Enter the name of the user-defined memory section."
+            }
+          }
+        },
+        "additional": {
+          "title": "Advanced features",
+          "type": "object",
+          "properties": {
+            "buffer_size": {
+              "title": "Formatting buffer size",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4096,
+              "default": 128,
+              "description": "Set the size, in bytes, of the temporary buffer used to format trace messages."
+            },
+            "trace_rx": {
+              "title": "Data reception",
+              "type": "boolean",
+              "default": false,
+              "description": "Enable the receive path and the user callback for incoming data from the selected interface."
+            },
+            "rx_user_cb": {
+              "title": "Reception callback name",
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 32,
+              "default": "rx_user_cb",
+              "actions": [
+                {
+                  "type": "include",
+                  "condition": "$additional.trace_rx==true",
+                  "message": "The reception callback name field is displayed when trace data reception is enabled."
+                },
+                {
+                  "type": "error",
+                  "condition": "!/^([a-zA-Z_][a-zA-Z0-9_]{3,31})?$/.test($value)",
+                  "message": "The function name must start with a letter or underscore and contain only letters, digits, or underscores."
+                }
+              ],
+              "unique": "project",
+              "description": "Enter the name of the user-defined callback function that handles received data."
+            },
+            "unchunk_mode": {
+              "title": "Unchunk mode",
+              "type": "boolean",
+              "default": false,
+              "description": "Transmit data without chunking. Plan for higher peak bandwidth requirements."
+            },
+            "trace_overrun": {
+              "title": "Overrun detection",
+              "type": "boolean",
+              "default": false,
+              "description": "Enable overrun detection to report a full FIFO and possible trace loss."
+            },
+            "overrun_mode": {
+              "title": "Overrun",
+              "type": "object",
+              "actions": [
+                {
+                  "type": "include",
+                  "condition": "$additional.trace_overrun==true",
+                  "message": "The overrun settings section is displayed when overrun detection is enabled."
+                }
+              ],
+              "description": "Configure the callback used when a FIFO overrun occurs.",
+              "properties": {
+                "overrun_cb_function": {
+                  "title": "Callback name",
+                  "type": "string",
+                  "actions": [
+                    {
+                      "type": "error",
+                      "condition": "!/^([a-zA-Z_][a-zA-Z0-9_]{3,31})?$/.test($value)",
+                      "message": "The function name must start with a letter or underscore and contain only letters, digits, or underscores."
+                    }
+                  ],
+                  "minLength": 5,
+                  "maxLength": 40,
+                  "default": "overrun_user_cb",
+                  "unique": "project",
+                  "description": "Enter the name of the user-defined callback function invoked when a FIFO overrun occurs."
+                }
+              }
+            },
+            "conditional": {
+              "title": "Conditional logging",
+              "type": "boolean",
+              "default": false,
+              "description": "Enable conditional logging features such as verbosity control, region filtering, and timestamp injection."
+            },
+            "conditional_mode": {
+              "title": "Conditional logging",
+              "type": "object",
+              "actions": [
+                {
+                  "type": "include",
+                  "condition": "$additional.conditional==true",
+                  "message": "The conditional logging settings section is displayed when conditional logging is enabled."
+                }
+              ],
+              "description": "Configure verbosity, region filtering, and optional timestamping.",
+              "properties": {
+                "verbose_level": {
+                  "title": "Verbosity level",
+                  "type": "integer",
+                  "default": 0,
+                  "minimum": 0,
+                  "maximum": 255,
+                  "description": "Set the initial verbosity level (0-255). Use higher values to enable more detailed output."
+                },
+                "region_mask": {
+                  "title": "Region mask",
+                  "type": "integer",
+                  "display_format": [
+                    "hex"
+                  ],
+                  "default": 4294967295,
+                  "minimum": 0,
+                  "maximum": 4294967295,
+                  "description": "Set the bitmask of regions enabled at startup. Use one bit per region, for up to 32 regions."
+                },
+                "set_timestamp": {
+                  "title": "Timestamp support",
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Enable timestamp support and configure the timestamp size and callback."
+                },
+                "timestamp_config": {
+                  "title": "Timestamp features",
+                  "type": "object",
+                  "actions": [
+                    {
+                      "type": "include",
+                      "condition": "$additional.conditional_mode.set_timestamp==true",
+                      "message": "The timestamp settings section is displayed when timestamp support is enabled."
+                    }
+                  ],
+                  "description": "Configure the timestamp size and callback.",
+                  "properties": {
+                    "timestamp_size": {
+                      "title": "Timestamp size",
+                      "type": "integer",
+                      "default": 15,
+                      "minimum": 1,
+                      "maximum": 4096,
+                      "description": "Set the maximum size, in bytes, reserved for the formatted timestamp."
+                    },
+                    "time_stamp_cb": {
+                      "title": "Timestamp callback name",
+                      "type": "string",
+                      "actions": [
+                        {
+                          "type": "error",
+                          "condition": "!/^([a-zA-Z_][a-zA-Z0-9_]{3,31})?$/.test($value)",
+                          "message": "The function name must start with a letter or underscore and contain only letters, digits, or underscores."
+                        }
+                      ],
+                      "minLength": 5,
+                      "maxLength": 32,
+                      "default": "time_stamp_now_cb",
+                      "unique": "project",
+                      "description": "Enter the name of the user-defined callback function that provides the current timestamp."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "resourcesAllocation": {
+          "title": "Resource allocation",
+          "description": "Select the output interface and associated peripheral resources.",
+          "type": "object",
+          "properties": {
+            "output_interface": {
+              "title": "Output interface",
+              "type": "string",
+              "oneOf": [
+                {
+                  "title": "Custom interface",
+                  "const": "CUSTOM"
+                },
+                {
+                  "title": "UART",
+                  "const": "UART"
+                }
+              ],
+              "default": "UART",
+              "description": "Select the interface used by Advanced Trace: UART or a custom implementation."
+            },
+            "uart_instance": {
+              "type": "object",
+              "title": "UART instance",
+              "description": "Select the UART peripheral to use, then configure it in the HAL panel with HAL layer, Callable resource initialization, UART function, and DMA TX enabled. Then enable Use register callback in the CORE panel.",
+              "objectType": "bind.peripheral.config",
+              "criteria": {
+                "peripheralType": [
+                  "usart",
+                  "uart",
+                  "lpuart"
+                ]
+              },
+              "actions": [
+                {
+                  "type": "include",
+                  "condition": "$resourcesAllocation.output_interface==='UART'",
+                  "message": "The peripheral instance field is displayed when UART is selected as the output interface."
+                },
+                {
+                  "type": "warning",
+                  "condition": "$resourcesAllocation.output_interface==='UART' && !($resourcesAllocation.uart_instance && $resourcesAllocation.uart_instance.selection)",
+                  "message": "A UART instance should be selected when UART is used as the output interface."
+                },
+                {
+                  "type": "error",
+                  "condition": "$resourcesAllocation.output_interface==='UART' && !($resourcesAllocation.uart_instance && $resourcesAllocation.uart_instance.selection)",
+                  "message": "A UART instance must be selected when UART is used as the output interface."
+                },
+                {
+                  "type": "error",
+                  "condition": "$resourcesAllocation.output_interface==='UART' && $resourcesAllocation.uart_instance?.selection && $get('sw-config.peripheral-parameter-value', $resourcesAllocation.uart_instance.selection, 'info/layer') !== 'HAL'",
+                  "message": "The selected UART instance must use the HAL layer."
+                },
+                {
+                  "type": "error",
+                  "condition": "$resourcesAllocation.output_interface==='UART' && $resourcesAllocation.uart_instance?.selection && $get('sw-config.peripheral-parameter-value', $resourcesAllocation.uart_instance.selection, 'info/init_type') !== 'called'",
+                  "message": "The selected UART instance must use Callable resource initialization."
+                },
+                {
+                  "type": "error",
+                  "condition": "$resourcesAllocation.output_interface==='UART' && $resourcesAllocation.uart_instance?.selection && $get('sw-config.peripheral-parameter-value', $resourcesAllocation.uart_instance.selection, 'info/function_type') !== 'UART'",
+                  "message": "The selected UART instance must use the UART function."
+                },
+                {
+                  "type": "error",
+                  "condition": "$resourcesAllocation.output_interface==='UART' && $resourcesAllocation.uart_instance?.selection && $get('sw-config.peripheral-parameter-value', $resourcesAllocation.uart_instance.selection, 'system/dma/enable_dma_tx') !== true",
+                  "message": "The selected UART instance must have DMA Tx enabled."
+                },
+                {
+                  "type": "error",
+                  "condition": "$resourcesAllocation.output_interface==='UART'  && $resourcesAllocation.uart_instance?.selection && $get('sw-config.project-component-parameter-value', 'HALCore', 'uart_feature/use_register_callback') !== true",
+                  "message": "Use register callback must be enabled in the CORE panel for HAL UART."
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

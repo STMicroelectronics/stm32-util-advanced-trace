@@ -1,15 +1,15 @@
 {
     "bomFormat": "CycloneDX",
     "specVersion": "1.5",
-    "serialNumber": "urn:uuid:bd076ecf-8796-4e9c-a249-c69a00fbc91f",
+    "serialNumber": "urn:uuid:677c293a-1999-42a6-8697-11502e4ae9bb",
     "version": 1,
     "metadata": {
-        "timestamp": "2026-02-12T15:59:16Z",
+        "timestamp": "2026-05-06T14:34:01Z",
         "tools": [
             {
                 "vendor": "Black Duck",
                 "name": "Hub",
-                "version": "2025.10.0"
+                "version": "2026.1.1"
             },
             {
                 "vendor": "CycloneDX",
@@ -24,12 +24,12 @@
         ],
         "component": {
             "type": "application",
-            "bom-ref": "2790b98f-1e52-45f1-b8b0-b6abeeb1b1d5",
+            "bom-ref": "863c73d7-2330-40d4-8ef0-e632460b9b47",
             "supplier": {
                 "name": ""
             },
             "name": "Advanced_Trace",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "licenses": [
                 {
                     "license": {
@@ -47,7 +47,7 @@
                 },
                 {
                     "name": "BlackDuck-ComponentVersion",
-                    "value": "2790b98f-1e52-45f1-b8b0-b6abeeb1b1d5"
+                    "value": "863c73d7-2330-40d4-8ef0-e632460b9b47"
                 }
             ]
         }
@@ -55,12 +55,13 @@
     "components": [
         {
             "type": "library",
-            "bom-ref": "2cdb6dbb-5593-48ac-bc59-ea25ed7c8408",
+            "bom-ref": "863c73d7-2330-40d4-8ef0-e632460b9b47---1545b811-34df-4d48-9d48-bdabcbfd4e02",
             "supplier": {
                 "name": ""
             },
+            "author": "STMicroelectronics",
             "name": "Advanced_Trace",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "licenses": [
                 {
                     "license": {
@@ -78,16 +79,16 @@
                 },
                 {
                     "name": "BlackDuck-ComponentVersion",
-                    "value": "2cdb6dbb-5593-48ac-bc59-ea25ed7c8408"
+                    "value": "1545b811-34df-4d48-9d48-bdabcbfd4e02"
                 }
             ]
         }
     ],
     "dependencies": [
         {
-            "ref": "2790b98f-1e52-45f1-b8b0-b6abeeb1b1d5",
+            "ref": "863c73d7-2330-40d4-8ef0-e632460b9b47",
             "dependsOn": [
-                "2cdb6dbb-5593-48ac-bc59-ea25ed7c8408"
+                "863c73d7-2330-40d4-8ef0-e632460b9b47---1545b811-34df-4d48-9d48-bdabcbfd4e02"
             ]
         }
     ]

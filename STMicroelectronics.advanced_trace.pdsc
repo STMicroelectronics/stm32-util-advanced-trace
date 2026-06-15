@@ -6,6 +6,38 @@
     <environment name="STM32Cube">
       <stm32:pack type="UTILITY" friendlyName="advanced_trace" shortDesc="Advanced_Trace utility">
         <relocation-info parent="utilities" layer="" element=""/>
+        <compatibility>
+          <release version="2.1.0">
+            <applicable-schema schemaType="sw-configuration" schemaVersion="3.8.0"/>
+            <applicable-api-group apiType="codegen-getters">
+              <applicable-api apiType="clockAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="DmaAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="EnvVarAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="ExtiAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="hwPlatformAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="NvicAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="peripheralsResourceManagerAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="pinoutAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="SWConfigurationAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="SWProjectAPI" apiVersion="1.0.0"/>
+            </applicable-api-group>
+          </release>
+          <release version="2.0.0">
+            <applicable-schema schemaType="sw-configuration" schemaVersion="3.8.0"/>
+            <applicable-api-group apiType="codegen-getters">
+              <applicable-api apiType="clockAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="DmaAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="EnvVarAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="ExtiAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="hwPlatformAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="NvicAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="peripheralsResourceManagerAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="pinoutAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="SWConfigurationAPI" apiVersion="1.0.0"/>
+              <applicable-api apiType="SWProjectAPI" apiVersion="1.0.0"/>
+            </applicable-api-group>
+          </release>
+        </compatibility>
       </stm32:pack>
     </environment>
   </environments>
@@ -22,6 +54,9 @@
     <changelog id="Release Notes" name="Release_Notes.html"/>
   </changelogs>
   <releases>
+    <release version="2.1.0" date="2026-06-12">
+      Refer to Release_Notes.html for release details.
+    </release>
     <release version="2.0.0" date="2026-03-13">
       Refer to Release_Notes.html for release details.
     </release>
@@ -84,7 +119,7 @@
         <file category="header" name="interface_data/adv_trace_itf_data.h"/>
       </files>
     </component>
-    <component Cclass="Utility" Cgroup="ADVANCED_TRACE" Csub="itf_data" Cvariant="UART" Cversion="1.0.0" condition="STM32 HAL UART" isDefaultVariant="true">
+    <component Cclass="Utility" Cgroup="ADVANCED_TRACE" Csub="itf_data" Cvariant="UART" Cversion="1.1.0" condition="STM32 HAL UART" isDefaultVariant="true">
       <description>UART-based ready to use interface (no initialization and configuration)</description>
       <files>
         <file category="source" name="interface_data/adv_trace_itfdata_uart.c"/>
@@ -96,10 +131,13 @@
         <file category="source" name="interface_data/adv_trace_itfdata_template.c" attr="config" version="1.0.0"/>
       </files>
     </component>
-    <component generator="advanced_trace_mx2codegen" Cclass="Utility" Cgroup="STM32CubeMX2 Config" Csub="ADVANCED_TRACE" Cversion="1.0.0" condition="ADVANCED_TRACE Config">
+    <component generator="advanced_trace_mx2codegen" Cclass="Utility" Cgroup="STM32CubeMX2 Config" Csub="ADVANCED_TRACE" Cversion="1.1.0" condition="ADVANCED_TRACE Config">
       <description> Code Generation for utility advanced_trace</description>
       <environments>
         <environment name="STM32Cube">
+          <stm32:component>
+            <utility-entry-point id="Advanced_Trace" name="Advanced_Trace" category="Trace / Log Utility"/>
+          </stm32:component>
         </environment>
       </environments>
       <files>

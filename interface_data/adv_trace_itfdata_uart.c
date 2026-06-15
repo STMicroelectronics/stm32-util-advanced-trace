@@ -208,6 +208,20 @@ itfdata_status_t ADVTRACE_ITF_DATA_StartRx(void (*cb)(uint8_t *p_data, uint16_t 
 itfdata_status_t ADVTRACE_ITF_DATA_Transmit(uint8_t *p_data, uint16_t size_byte)
 {
   itfdata_status_t ret_status = ADVTRACE_ITF_DATA_OK;
+
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+  /*
+   * D-Cache maintenance works on whole cache lines.
+   * Round start address down to 32-byte boundary and round covered length up
+   * so all lines touched by [p_data, p_data + size_byte) are cleaned.
+   */
+  uint32_t addr = (uint32_t)p_data;
+  uint32_t aligned_addr = addr & ~(32U - 1U);
+  uint32_t aligned_size = ((uint32_t)size_byte + (addr - aligned_addr) + 31U) & ~(32U - 1U);
+
+  SCB_CleanDCache_by_Addr((uint32_t *)aligned_addr, (int32_t)aligned_size);
+#endif /* __DCACHE_PRESENT */
+
   if (HAL_UART_Transmit_DMA(itf_huart, p_data, size_byte) != HAL_OK)
   {
     ret_status = ADVTRACE_ITF_DATA_ERROR;

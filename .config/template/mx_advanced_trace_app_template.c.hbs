@@ -1,0 +1,130 @@
+{{!--
+  ******************************************************************************
+  * @file           : mx_advanced_trace_app_template.c.hbs
+  * @brief          : Advanced Trace utility initialization source template
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  ~--}}
+{{assign 'advanced_traceFilter' (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "ADVANCED_TRACE"}')~}}
+{{assign 'advanced_trace_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.advanced_traceFilter)~}}
+{{assign 'advanced_trace_cxt' @root.advanced_trace_context.[0].settings.parameters~}}
+{{log "advanced_trace Config template advanced_trace_cxt:" (toJSON @root.advanced_trace_cxt)~}}
+/**
+  ******************************************************************************
+  * @file    mx_advanced_trace_app.c
+  * @brief   Advanced Trace initialization source file
+{{> LICENSE}}
+
+/* Includes ------------------------------------------------------------------*/
+#include "mx_advanced_trace_app.h"
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private defines -----------------------------------------------------------*/
+/* Private macros ------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+
+/* Exported functions --------------------------------------------------------*/
+
+/******************************************************************************/
+/* Exported functions for Advanced Trace initialization                       */
+/******************************************************************************/
+
+{{#with @root.advanced_trace_cxt~}}
+{{#with resourcesAllocation~}}
+/**
+  * @brief  Initialize the Advanced Trace utility and apply the generated runtime configuration.
+  * @retval SYSTEM_OK                Advanced Trace initialization completed successfully.
+  * @retval SYSTEM_PERIPHERAL_ERROR  Advanced Trace initialization failed.
+  */
+system_status_t mx_adv_trace_init(void)
+{
+  system_status_t return_status = SYSTEM_PERIPHERAL_ERROR;
+
+  /* Initialize the Advanced Trace utility. */
+{{#if (eq output_interface 'CUSTOM')}}
+  if (ADV_TRACE_Init(NULL) == ADV_TRACE_OK)
+  {
+    return_status = SYSTEM_OK;
+  }
+{{else}}
+  if (ADV_TRACE_Init(ADV_TRACE_UART_GETHANDLE()) == ADV_TRACE_OK)
+  {
+    return_status = SYSTEM_OK;
+  }
+{{/if}}{{!output_interface "CUSTOM"}}{{!output_interface "UART"}}{{/with}}{{!resourcesAllocation}}
+{{#with additional~}}
+{{#if conditional}}
+  /* Set the initial verbose level. */
+  ADV_TRACE_SetVerboseLevel(MX_VERBOSE_LEVEL_{{conditional_mode.verbose_level}});
+
+  /* Set the initial region mask. */
+  ADV_TRACE_SetRegion({{conditional_mode.region_mask}});
+
+{{#if conditional_mode.set_timestamp}}
+  /* Register the timestamp callback. */
+  ADV_TRACE_RegisterTimeStampFunction({{conditional_mode.timestamp_config.time_stamp_cb}});
+{{/if}}{{!conditional_mode.set_timestamp}}{{/if}}{{!conditional}}
+{{#if trace_overrun}}
+  /* Register the overrun callback. */
+  ADV_TRACE_RegisterOverRunFunction({{overrun_mode.overrun_cb_function}});
+{{/if}}{{!trace_overrun}}
+{{#if trace_rx}}
+  /* Start the reception process. */
+  (void)ADV_TRACE_StartRxProcess({{rx_user_cb}});
+{{/if}}{{!trace_rx}}
+
+  return return_status;
+}
+{{#if trace_rx}}
+/**
+  * @brief  Default weak reception callback.
+  * @param  p_data     Pointer to the received data buffer.
+  * @param  size_byte  Number of received bytes.
+  * @param  error      Reception error status.
+  * @note   Override this function to handle received data in the application.
+  */
+__WEAK void {{rx_user_cb}}(uint8_t *p_data, uint16_t size_byte, uint8_t error)
+{
+  /* Default implementation intentionally left empty. */
+  (void)p_data;
+  (void)size_byte;
+  (void)error;
+}
+{{/if}}{{!trace_rx}}
+{{#if trace_overrun}}
+/**
+  * @brief  Default weak overrun callback.
+  * @param  p_data  Pointer to the overrun payload buffer pointer.
+  * @param  size    Pointer to the number of bytes to send for the overrun indication.
+  * @note   Override this function to provide an application-specific overrun indication.
+  */
+__WEAK void {{overrun_mode.overrun_cb_function}}(uint8_t **p_data, uint16_t *size)
+{
+  /* Default implementation generates no overrun indication. */
+  *p_data = NULL;
+  *size = 0U;
+}
+{{/if}}{{!trace_overrun}}
+{{#if conditional}}{{#if conditional_mode.set_timestamp}}
+/**
+  * @brief  Default weak timestamp callback.
+  * @param  buff  Pointer to the timestamp output buffer.
+  * @param  size  Pointer to the number of bytes written to buff.
+  * @note   Override this function to provide a formatted timestamp.
+  */
+__WEAK void {{conditional_mode.timestamp_config.time_stamp_cb}}(uint8_t *buff, uint16_t *size)
+{
+  /* Default implementation generates an empty timestamp. */
+  (void)buff;
+  *size = 0U;
+}{{/if}}{{!conditional_mode.set_timestamp}}{{/if}}{{!conditional}}{{/with}}{{!additional}}{{/with}}{{!advanced_trace_cxt}}
